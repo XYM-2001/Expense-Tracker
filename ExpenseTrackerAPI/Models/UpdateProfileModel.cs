@@ -2,6 +2,6 @@ namespace ExpenseTrackerAPI.Models
 {
     public class UpdateProfileModel
     {
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
     }
 }

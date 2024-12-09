@@ -5,8 +5,8 @@ namespace ExpenseTrackerAPI.Models
 {
     public class User : IdentityUser
     {
-        public string FullName { get; set; }
-        public ICollection<Expense> Expenses { get; set; }
-        public ICollection<Budget> Budgets { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+        public ICollection<Budget> Budgets { get; set; } = new List<Budget>();
     }
 }

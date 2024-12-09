@@ -24,6 +24,11 @@ public class BudgetsController : ControllerBase
     public async Task<IActionResult> GetBudgets()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
         var budgets = await _context.Budgets.Where(b => b.UserId == userId).ToListAsync();
         return Ok(budgets);
     }
@@ -33,6 +38,11 @@ public class BudgetsController : ControllerBase
     public async Task<IActionResult> CreateBudget([FromBody] Budget budget)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
         budget.UserId = userId;
         _context.Budgets.Add(budget);
         await _context.SaveChangesAsync();
