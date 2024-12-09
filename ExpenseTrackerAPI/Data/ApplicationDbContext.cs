@@ -17,7 +17,14 @@ namespace ExpenseTrackerAPI.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Define relationships and constraints here if necessary
+
+            builder.Entity<Budget>()
+                .Property(b => b.BudgetAmount)
+                .HasColumnType("decimal(18,2)");
+
+            builder.Entity<Expense>()
+                .Property(e => e.Amount)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }
