@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -8,26 +9,34 @@ namespace ExpenseTrackerAPI.Middlewares
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger _logger;
 
-        public ExceptionMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
+        public ExceptionMiddleware(RequestDelegate next)
         {
-            _logger = loggerFactory.CreateLogger<ExceptionMiddleware>();
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
-                await _next(context);
+                await _next(httpContext);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
+                await HandleExceptionAsync(httpContext, ex);
             }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            return context.Response.WriteAsync(new
+            {
+                StatusCode = context.Response.StatusCode,
+                Message = "Internal Server Error from the custom middleware."
+            }.ToString());
         }
     }
 }

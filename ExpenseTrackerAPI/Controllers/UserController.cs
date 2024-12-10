@@ -21,16 +21,36 @@ namespace ExpenseTrackerAPI.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            var userId = User.Identity.Name;
+            var userId = User.Identity?.Name;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var user = await _userManager.FindByNameAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             return Ok(new { user.UserName, user.Email, user.FullName });
         }
 
         [HttpPost("update-profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileModel model)
         {
-            var userId = User.Identity.Name;
+            var userId = User.Identity?.Name;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var user = await _userManager.FindByNameAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             user.FullName = model.FullName;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
