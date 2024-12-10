@@ -6,7 +6,7 @@ import { ExpenseService } from '../../services/expense.service';
   templateUrl: './expenses.component.html'
 })
 export class ExpensesComponent implements OnInit {
-  expenses: any[];
+  expenses: any[] = []; // Initialize with an empty array
 
   constructor(private expenseService: ExpenseService) { }
 
